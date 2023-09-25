@@ -1,6 +1,7 @@
 "use client"
 import React, { useEffect } from 'react';
 import mapboxgl from 'mapbox-gl';
+import geojsonData from "../schools-list.json"
 
 
 interface MapProps {
@@ -43,6 +44,39 @@ function Map({ mapboxAccessToken }: MapProps) {
     });
   
     map.addControl(directions, 'bottom-left');
+
+    map.on('load', () => {
+      map.addLayer({
+        id: 'rpd_parks',
+        type: 'fill',
+        source: {
+          type: 'vector',
+          url: 'mapbox://mapbox.3o7ubwm8'
+        },
+        'source-layer': 'RPD_Parks'
+      });
+    });
+
+    const data = geojsonData;
+
+    console.log(data.features[0].geometry.coordinates)
+
+    function markersCoordinates(number_of_markers: number) {
+      const markers = []
+      for (let i = 0;i<number_of_markers; i++) {
+        markers.push(data.features[i].geometry.coordinates)
+      }
+      return markers
+    }
+
+    const Markers = markersCoordinates(10)
+
+    for (let i = 0;i<Markers.length;i++) {
+      new mapboxgl.Marker({
+        draggable: true
+        }).setLngLat(Markers[i])
+        .addTo(map);
+    }
 
     const marker = new mapboxgl.Marker({
       draggable: true

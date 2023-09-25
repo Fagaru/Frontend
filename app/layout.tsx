@@ -1,7 +1,11 @@
+"use client"
+
 import './globals.css'
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 import Map from '@/components/map'
+import { useEffect } from 'react';
+import {geojson} from '../geojson'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -15,12 +19,24 @@ export default function RootLayout({
 }: {
   children: React.ReactNode
 }) {
+  useEffect(() => {
+    // Create a <script> element
+    const script = document.createElement('script');
+
+    // Set the content of the <script> element to your JSON data
+    script.textContent = `var geojsonData = ${JSON.stringify(geojson)};`;
+
+    // Append the <script> element to the document's <head> section
+    document.head.appendChild(script);
+  }, []);
+
+
   return (
     <html lang="en">
       <head>
-      <link href='https://api.mapbox.com/mapbox-gl-js/v2.8.1/mapbox-gl.css' rel='stylesheet' />
-    <script src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-directions/v4.1.1/mapbox-gl-directions.js"></script>
-  <link rel="stylesheet" href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-directions/v4.1.1/mapbox-gl-directions.css" type="text/css"></link>
+        <link href='https://api.mapbox.com/mapbox-gl-js/v2.8.1/mapbox-gl.css' rel='stylesheet' />
+        <script src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-directions/v4.1.1/mapbox-gl-directions.js"></script>
+        <link rel="stylesheet" href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-directions/v4.1.1/mapbox-gl-directions.css" type="text/css"></link>
       </head>
       <body className={inter.className}>
         <Map mapboxAccessToken="pk.eyJ1IjoiYXNwbGlmIiwiYSI6ImNsbTM3djRnazEyZzQzZXA5bTduZnpneGUifQ.0jzixvuZ7r5khr_5Xu_b1w" />
